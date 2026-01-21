@@ -9,7 +9,7 @@ public record PostRequestDTO(
         String title,
 
         @NotBlank(message = "Content is not allowed to be empty")
-        @Size(min = 10, max = 5000, message = "Content must be between 10 & 1000 characters long")
+        @Size(min = 10, max = 5000, message = "Content must be between 10 & 5000 characters long")
         String content
 ) {
 }
