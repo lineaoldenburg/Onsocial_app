@@ -4,36 +4,75 @@ import jakarta.persistence.*;
 
 import java.util.List;
 
+/**
+ * Klassen representerar en användare.
+ * Den innehåller de attribut som speglar kolumner i databasen.
+ * En user kan ha flera posts.
+ *
+ * @author Simeon
+ * Dokumenterad: 2026-01-21
+ */
 @Entity
 @Table(name = "users")
 public class User {
 
+    /**
+     * Unikt ID för användaren, genereras automatiskt av databasen.
+     * Referens till databasens namn "user_id".
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
     private Long id;
 
-    @Column(name = "firstName", nullable = false)
+    /**
+     * Användaren förnamn.
+     */
+    @Column(nullable = false)
     private String firstName;
 
-    @Column(name = "lastName", nullable = false)
+    /**
+     * Användarens efternamn.
+     */
+    @Column(nullable = false)
     private String lastName;
 
-    @Column(name = "email", nullable = false)
+    /**
+     * Användarens e-postadress.
+     * Måste vara unik (två användare kan inte ha samma e-postadress).
+     */
+    @Column(unique = true, nullable = false)
     private String email;
 
-    @Column(name = "alias", unique = true, nullable = false)
+    /**
+     * Användarens användarnamn.
+     * Måste vara unik (två användare kan inte ha samma användarnamn).
+     */
+    @Column(unique = true, nullable = false)
     private String alias;
 
-    @Column(name = "password", nullable = false)
+    /**
+     * Användarens lösenord.
+     */
+    @Column(nullable = false)
     private String password;
 
-    @Column(name = "profilePicture")
+    /**
+     * Användarens profilbild.
+     */
     private String profilePicture;
 
+    /**
+     * Användarens roll.
+     */
     @Column(nullable = false)
     private String role = "USER";
 
+    /**
+     * Lista över alla poster användaren har skapat.
+     * En användare kan ha flera poster (One-to-Many relation).
+     * Om användaren tas bort, raderas alla poster automatiskt (CascadeType.REMOVE).
+     */
     @OneToMany(mappedBy = "user"
             , cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private List<Post> posts;
