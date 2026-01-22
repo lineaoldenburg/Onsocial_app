@@ -12,6 +12,20 @@ import se.jensen.linea.onsocial_app.repository.UserRepository;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * PostService innehåller alla metoder vi behöver anropa i PostController.
+ * Den innehåller alltså affärslogiken mellan PostControllern och databasen.
+ * Klassen annoteras med Service, vilket gör att Spring skapar en Singleton som kan injiceras i andra klasser.
+ * <p>
+ * Transactional gör att metoderna körs inom en databastransaktion.
+ * Antingen lyckas alla metoder med annotering eller ingen av dem.
+ * <p>
+ * readOnly används för att signalera att metoderna inte ska uppdatera databasen.
+ * Vilket gör programmet mer resurseffektivt och undviker fel.
+ *
+ * @author Simeon
+ * Dokumenterad: 2026-01-22
+ */
 @Service
 public class PostService {
     private final PostRepository postRepository;
@@ -22,7 +36,11 @@ public class PostService {
         this.userRepository = userRepository;
     }
 
-    // Find all posts
+    /**
+     * Hämta alla inlägg i databasen.
+     *
+     * @return Lista av PostResponseDTO.
+     */
     @Transactional(readOnly = true)
     public List<PostResponseDTO> findAll() {
         List<PostResponseDTO> postResponseDTOList = new ArrayList<>();
@@ -42,7 +60,12 @@ public class PostService {
         return postResponseDTOList;
     }
 
-    // Find all posts by user ID
+    /**
+     * Hämta alla inlägg från en användare.
+     *
+     * @param userId Användarens id.
+     * @return Lista av PostResponseDTO.
+     */
     @Transactional(readOnly = true)
     public List<PostResponseDTO> findAllByUserId(Long userId) {
         List<Post> posts = postRepository.findByUserId(userId);
@@ -62,7 +85,13 @@ public class PostService {
         return postResponseDTOList;
     }
 
-    // Find specific post by ID - returns one post or throws exception
+    /**
+     * Hitta ett specifikt inlägg med ett ID.
+     *
+     * @param id Inläggets id.
+     * @return En PostResponseDTO.
+     * @throws RuntimeException on inlägget inte hittas.
+     */
     @Transactional(readOnly = true)
     public PostResponseDTO findById(Long id) {
         Post post = postRepository.findById(id)
@@ -78,7 +107,13 @@ public class PostService {
         );
     }
 
-    // Create new post
+    /**
+     * Skapa ett nytt inlägg för en användare.
+     *
+     * @param userId  Användarens id.
+     * @param postDto PostRequestDTO.
+     * @return En PostResponseDTO med information om postens innehåll.
+     */
     @Transactional
     public PostResponseDTO createPost(Long userId, PostRequestDTO postDto) {
         User user = userRepository.findById(userId)
@@ -101,7 +136,14 @@ public class PostService {
         );
     }
 
-    // Update post
+    /**
+     * Uppdatera ett inlägg.
+     * Söka upp ett inlägg med dess id och få uppdaterade uppgifterna från klienten.
+     *
+     * @param id             Inläggets id.
+     * @param postRequestDTO PostRequestDTO.
+     * @return En PostResponseDTO med information om postens innehåll.
+     */
     @Transactional
     public PostResponseDTO updatePost(Long id, PostRequestDTO postRequestDTO) {
         Post post = postRepository.findById(id)
@@ -122,7 +164,12 @@ public class PostService {
         );
     }
 
-    // Delete post
+    /**
+     * Radera inlägg.
+     *
+     * @param id Inläggets id.
+     * @return true om posten har tagits bort, false annars.
+     */
     public boolean deletePost(Long id) {
         if (postRepository.existsById(id)) {
             postRepository.deleteById(id);
