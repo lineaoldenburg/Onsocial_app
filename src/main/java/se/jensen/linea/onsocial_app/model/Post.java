@@ -49,6 +49,7 @@ public class Post {
         this.created = Instant.now();
     }
 
+
     // Getters & Setters
     public long getId() {
         return id;
@@ -86,4 +87,6 @@ public class Post {
     public void setUser(User user) {
         this.user = user;
     }
+
+
 }
