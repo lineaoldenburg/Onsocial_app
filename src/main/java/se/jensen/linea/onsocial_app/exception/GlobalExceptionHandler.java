@@ -11,10 +11,22 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Klassen innehåller globala exception hanterare.
+ * RestControllerAdvice ser till att klassen fångar alla undantag som sker i Controller-metoderna
+ * (annoterade med @RestController eller @Controller), tjänster som anropar controllers
+ * och Repository-anrop som sker via controllers.
+ * Exception-metoderna returnerar HTTP-svar så klienten får felmeddelanden i JSON-format.
+ *
+ * @author Simeon
+ * Dokumenterad: 2026-01-22
+ */
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    // Handle validation errors from @Valid
+    /**
+     * Hanterar valideringsfel från @Valid
+     */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, String>> handleValidationErrors(
             MethodArgumentNotValidException ex) {
@@ -32,7 +44,9 @@ public class GlobalExceptionHandler {
                 .body(errors);
     }
 
-    // Handle user not found (wrong username/email)
+    /**
+     * Hanterar fel när användaren inte hittas (fel alias/mejl-adress)
+     */
     @ExceptionHandler(UsernameNotFoundException.class)
     public ResponseEntity<Map<String, String>> handleUsernameNotFound(UsernameNotFoundException ex) {
         return ResponseEntity
@@ -40,7 +54,9 @@ public class GlobalExceptionHandler {
                 .body(Map.of("error", ex.getMessage()));
     }
 
-    // Handle wrong password
+    /**
+     * Hanterar fel vid fel lösenord.
+     */
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<Map<String, String>> handleBadCredentials(BadCredentialsException ex) {
         return ResponseEntity
@@ -48,7 +64,9 @@ public class GlobalExceptionHandler {
                 .body(Map.of("error", ex.getMessage()));
     }
 
-    // Handle illegal arguments (like missing token)
+    /**
+     * Hanterar felaktiga argument (t.ex. saknad token).
+     */
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<Map<String, String>> handleIllegalArgument(IllegalArgumentException ex) {
         return ResponseEntity
@@ -56,7 +74,9 @@ public class GlobalExceptionHandler {
                 .body(Map.of("error", ex.getMessage()));
     }
 
-    // Handle runtime exceptions (like duplicate alias/email)
+    /**
+     * Hanterar körtidsundantag (t.ex. dubbletter av alias/email)
+     */
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<Map<String, String>> handleRuntimeException(RuntimeException ex) {
         return ResponseEntity
@@ -64,7 +84,9 @@ public class GlobalExceptionHandler {
                 .body(Map.of("error", ex.getMessage()));
     }
 
-    // Global Catch-all for unexpected errors
+    /**
+     * En global "catch all" för oväntade fel.
+     */
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, String>> handleGenericException(Exception ex) {
         // Log full exception for debugging
