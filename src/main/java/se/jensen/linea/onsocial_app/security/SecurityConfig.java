@@ -59,7 +59,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/auth/check-alias").permitAll()
                         .requestMatchers(HttpMethod.GET, "/auth/check-email").permitAll()
                         .requestMatchers(HttpMethod.POST, "/upload/public/**").permitAll()
-
+                        .requestMatchers(HttpMethod.POST, "/users/find_all").permitAll()
+                        
                         // Swagger
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
 
