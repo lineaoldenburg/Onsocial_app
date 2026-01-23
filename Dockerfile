@@ -1,5 +1,5 @@
 #Build
-FROM maven:3.9.6-eclipse-temurin-17 AS build
+FROM maven:3.9.6-eclipse-tmurin-21 AS build
 WORKDIR /app
 
 COPY pom.xml .
