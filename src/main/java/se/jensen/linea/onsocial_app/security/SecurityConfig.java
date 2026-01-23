@@ -59,8 +59,14 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/auth/check-alias").permitAll()
                         .requestMatchers(HttpMethod.GET, "/auth/check-email").permitAll()
                         .requestMatchers(HttpMethod.POST, "/upload/public/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/users/find_all").permitAll()
 
+                        // Swagger
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
+
+                        // Actuator endpoints for health check
+                        .requestMatchers("/actuator/health", "/actuator/info").permitAll()
+
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session
