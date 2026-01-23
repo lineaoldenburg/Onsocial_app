@@ -25,6 +25,7 @@ public class Post {
     private Long id;
 
     /**
+     *
      * Postens titel, får inte vara tom.
      */
     @Column(name = "title", nullable = false)
@@ -38,8 +39,9 @@ public class Post {
 
     /**
      * Postens innehåll, referens till databasens namn "post_content", får inte vara tom.
+     * Max längd 5000 ord (@Author Linea).
      */
-    @Column(name = "post_content", nullable = false)
+    @Column(name = "post_content", nullable = false, length = 5000)
     private String content;
 
     /**
