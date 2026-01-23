@@ -9,6 +9,7 @@ COPY pom.xml .
 #Laddar ner all dependencies för gör bygget snabbare
 RUN mvn -B dependency:go-offline
 
+
 #Kopierar hela källkoden, Maven behöver den för att bygga JAR-filen
 COPY src ./src
 #Bygger JAR-filen och hoppar över tester. snabbare build och inga tester behövs i Docker

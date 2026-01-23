@@ -46,6 +46,7 @@ public class PostService {
         List<PostResponseDTO> postResponseDTOList = new ArrayList<>();
         List<Post> posts = postRepository.findAll();
 
+
         for (Post post : posts) {
             PostResponseDTO dto = new PostResponseDTO(
                     post.getId(),

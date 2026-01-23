@@ -11,6 +11,7 @@ import se.jensen.linea.onsocial_app.model.User;
  */
 public class PostMapper {
 
+
     /**
      * Skapar en Post-entity från en PostRequestDTO.
      * Från klienten -> till backend.
