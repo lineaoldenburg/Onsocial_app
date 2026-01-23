@@ -20,6 +20,7 @@ FROM eclipse-temurin:17-jre
 #Sätter arbetsmappen igen för ordning och reda
 WORKDIR /app
 
+
 #Kopierar JAR-filen från build-steget ovan
 COPY --from=build /app/target/Onsocial_app-0.0.1-SNAPSHOT.jar app.jar
 
