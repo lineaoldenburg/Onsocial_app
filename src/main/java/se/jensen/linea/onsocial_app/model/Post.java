@@ -68,7 +68,9 @@ public class Post {
         this.content = content;
     }
 
-    // Auto-set creation timestamp
+    /**
+     * När inlägget skapas, så får vi en automatisk tidsstämpel.
+     */
     @PrePersist
     protected void onCreate() {
         this.created = Instant.now();
