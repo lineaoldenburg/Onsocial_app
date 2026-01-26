@@ -13,6 +13,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * UserService innehåller alla metoder vi behöver anropa i UserController.
+ * Den innehåller alltså affärslogiken mellan UserControllern och databasen.
+ * Klassen annoteras med Service, vilket gör att Spring skapar en Singleton som kan injiceras i andra klasser.
+ * <p>
+ * Transactional gör att metoderna körs inom en databastransaktion.
+ * Antingen lyckas alla metoder med annotering eller ingen av dem.
+ *
+ * @author Simeon
+ * Dokumenterad: 2026-01-22
+ */
 @Service
 public class UserService {
 
@@ -26,7 +37,12 @@ public class UserService {
         this.userMapper = userMapper;
     }
 
-    // Create new user
+    /**
+     * Skapa en ny användare.
+     *
+     * @param userRequestDTO Vi hämtar data från klienten via UserRequestDTO.
+     * @return En UserResponsDTO med information om användaren.
+     */
     @Transactional
     public UserResponseDTO createUser(UserRequestDTO userRequestDTO) {
         // Check if alias already exists (boolean)
@@ -52,7 +68,11 @@ public class UserService {
         return userMapper.userToDTO(savedUser);
     }
 
-    // Get all users
+    /**
+     * Hämta alla användare.
+     *
+     * @return Lista av UserResponseDTO.
+     */
     public List<UserResponseDTO> getAllUsers() {
         List<User> users = userRepository.findAll();
         List<UserResponseDTO> userDTOs = new ArrayList<>();
@@ -73,7 +93,13 @@ public class UserService {
         return userDTOs;
     }
 
-    // Get one user by ID
+    /**
+     * Hämta användare med ett specifikt ID.
+     *
+     * @param id användarens unika ID.
+     * @return UserResponseDTO med information om en användare.
+     * @throws RuntimeException om användaren inte hittas.
+     */
     public UserResponseDTO getUserByIdOrThrow(Long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
@@ -81,7 +107,13 @@ public class UserService {
         return userMapper.userToDTO(user);
     }
 
-    // Update user
+    /**
+     * Uppdatera en befintlig användare.
+     *
+     * @param id             Användarens unika ID.
+     * @param userRequestDTO Vi hämtar den nya informationen från klienten via UserRequestDTO.
+     * @return En UserResponseDTO med de uppdaterade uppgifterna.
+     */
     @Transactional
     public UserResponseDTO updateUser(Long id, UserRequestDTO userRequestDTO) {
         User user = userRepository.findById(id)
@@ -116,6 +148,12 @@ public class UserService {
         return userMapper.userToDTO(updatedUser);
     }
 
+    /**
+     * Radera en användare.
+     *
+     * @param id Användarens unika ID.
+     * @return en boolean.
+     */
     // Delete user
     public boolean deleteUser(Long id) {
         if (userRepository.existsById(id)) {

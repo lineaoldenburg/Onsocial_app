@@ -11,6 +11,13 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.stream.Collectors;
 
+/**
+ * TokenService skapar säkra JWT-tokens som används för autentisering i appen.
+ * Token skickas istället för användarnamn och lösenord för varje request.
+ *
+ * @author Simeon
+ * Dokumenterad: 2026-01-22
+ */
 @Service
 public class TokenService {
 
@@ -20,6 +27,15 @@ public class TokenService {
         this.jwtEncoder = jwtEncoder;
     }
 
+    /**
+     * Genererar JWT-token för att autentisera användaren.
+     * Token innehåller användarens identitet och roller och är giltig i 1 timme.
+     * String scope samlar användarens roll/roller vilket sen kan användas om användaren försöker använda en CRUD.
+     * Matchar användarens roll med CRUD-metodens säkerhetsregler, då får användaren åtkomst till den metoden.
+     *
+     * @param authentication innehåller användarens identitet och roller.
+     * @return En signerad JWT-token.
+     */
     public String generateToken(Authentication authentication) {
         Instant now = Instant.now();
 

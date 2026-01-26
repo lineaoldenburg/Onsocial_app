@@ -38,6 +38,14 @@ import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
 import java.util.List;
 
+/**
+ * Klassen är säkerhetscentralen för applikationen.
+ * Hanterar åtkomst baserat på behörigheter och autentisering.
+ * Vissa delar är öppna för publiken och andra är stängda.
+ *
+ * @author Simeon
+ * Dokumenterad: 2026-01-26
+ */
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -47,6 +55,15 @@ public class SecurityConfig {
 
     }
 
+    /**
+     * Säkerhetsregler för HTTP-förfrågningar.
+     * Bestämmer vilka endpoints som är publika och vilka som kräver autentisering.
+     *
+     * @param http Ett verktyg från Spring som vi använder för att bygga upp reglerna
+     *             (t.ex. vilka URL:er som ska vara öppna).
+     * @return Den färdiga säkerhetskedjan som Spring kommer använda för att kontrollera anrop.
+     * @throws Exception kastas om något går fel under konfigurationen av säkerhetsreglerna.
+     */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -59,6 +76,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/auth/check-alias").permitAll()
                         .requestMatchers(HttpMethod.GET, "/auth/check-email").permitAll()
                         .requestMatchers(HttpMethod.POST, "/upload/public/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/users/find_all").permitAll()
 
                         // Swagger
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
@@ -78,6 +96,11 @@ public class SecurityConfig {
         return http.build();
     }
 
+    /**
+     * Bestämmer vilka webbadresser (origins) som får lov att kommunicera med vårt API.
+     *
+     * @return En konfiguration som tillåter specifika adresser som t.ex. localhost:5173.
+     */
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
@@ -91,17 +114,40 @@ public class SecurityConfig {
         return source;
     }
 
+    /**
+     * Ett verktyg för att kryptera lösenord.
+     * Vi sparar aldrig riktiga lösenord i databasen, bara krypterade versioner.
+     *
+     * @return En algoritm (BCrypt) som används för att hash-lagra lösenordet säkert.
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    /**
+     * Metoden sköter inloggningsprocessen.
+     * Den kontrollerar om användarnamn och lösenord stämmer när någon loggar in.
+     *
+     * @param configuration Springs inbyggda regelbok som talar om hur säkerheten ska sättas upp.
+     * @return Motorn som utför kontrollen av inloggningen.
+     * @throws Exception Kastas om något går fel när Spring försöker bygga ihop inloggningsmotorn.
+     */
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
         return configuration.getAuthenticationManager();
     }
 
-    // RSA KeyPair Bean
+    /**
+     * Hämtar och förbereder de hemliga nycklarna (RSA) som används för att
+     * signera och verifiera våra JWT-token.
+     *
+     * @param privateKey Den hemliga text-strängen från vår inställningsfil (.env)
+     *                   som används för att signera tokens.
+     * @param publicKey  Den publika text-strängen som används för att verifiera tokens.
+     * @return Ett KeyPair-objekt som håller i både den privata och publika nyckeln.
+     * @throws Exception kastas om något fel inträffar vid formatering eller om RSA-algoritmen inte kan läsa dem.
+     */
     @Bean
     public KeyPair keyPair(
             @Value("${jwt.private-key}") String privateKey,
@@ -122,7 +168,12 @@ public class SecurityConfig {
         return new KeyPair(pubKey, privKey);
     }
 
-    // JWKSource Bean
+    /**
+     * Paketerar om våra RSA-nycklar till ett format som JWT-biblioteket förstår.
+     *
+     * @param keyPair De nycklar vi skapade i metoden ovan.
+     * @return En källa för JSON Web Keys (JWK) som används vid kryptering.
+     */
     @Bean
     public JWKSource<SecurityContext> jwkSource(KeyPair keyPair) {
         RSAKey rsaKey = new RSAKey.Builder((RSAPublicKey) keyPair.getPublic())
@@ -134,13 +185,23 @@ public class SecurityConfig {
         return new ImmutableJWKSet<>(jwkSet);
     }
 
-    // JwtEncoder Bean
+    /**
+     * Skapar verktyg som signerar och låser våra JWT-token (låser innehållet så att ingen kan ändra det).
+     *
+     * @param jwkSource Källan till nycklarna.
+     * @return En encoder-instans som kan skapa och signera nya, säkra tokens till användaren.
+     */
     @Bean
     public JwtEncoder jwtEncoder(JWKSource<SecurityContext> jwkSource) {
         return new NimbusJwtEncoder(jwkSource);
     }
 
-    // JwtDecoder Bean
+    /**
+     * Skapar verktyget som "läser"/verifierar och låser upp tokens.
+     *
+     * @param keyPair Objektet som innehåller våra nycklar (här används bara den publika nyckeln).
+     * @return En decoder-instans som kan verifiera att tokens är äkta.
+     */
     @Bean
     public JwtDecoder jwtDecoder(KeyPair keyPair) {
         return NimbusJwtDecoder
@@ -148,7 +209,12 @@ public class SecurityConfig {
                 .build();
     }
 
-    // JwtAuthenticationConverter Bean
+    /**
+     * Hjälper Spring att förstå hur den ska läsa informationen inuti en token,
+     * så att den vet vilka rättigheter (roles/scopes) användaren har.
+     *
+     * @return En översättare som gör om informationen i en JWT till rättigheter som Spring Security förstår.
+     */
     @Bean
     public JwtAuthenticationConverter jwtAuthenticationConverter() {
         JwtGrantedAuthoritiesConverter converter = new JwtGrantedAuthoritiesConverter();

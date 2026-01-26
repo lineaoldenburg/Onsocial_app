@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import se.jensen.linea.onsocial_app.DTO.PostRequestDTO;
 import se.jensen.linea.onsocial_app.DTO.PostResponseDTO;
+import se.jensen.linea.onsocial_app.mapper.PostMapper;
 import se.jensen.linea.onsocial_app.model.Post;
 import se.jensen.linea.onsocial_app.model.User;
 import se.jensen.linea.onsocial_app.repository.PostRepository;
@@ -43,22 +44,12 @@ public class PostService {
      */
     @Transactional(readOnly = true)
     public List<PostResponseDTO> findAll() {
-        List<PostResponseDTO> postResponseDTOList = new ArrayList<>();
-        List<Post> posts = postRepository.findAll();
-
-        for (Post post : posts) {
-            PostResponseDTO dto = new PostResponseDTO(
-                    post.getId(),
-                    post.getTitle(),
-                    post.getContent(),
-                    post.getUser().getId(),
-                    post.getUser().getAlias(),
-                    post.getCreated()
-            );
-            postResponseDTOList.add(dto);
-        }
-        return postResponseDTOList;
+        return postRepository.findAll()
+                .stream()
+                .map(PostMapper::toDTO)
+                .toList();
     }
+
 
     /**
      * Hämta alla inlägg från en användare.
@@ -111,7 +102,7 @@ public class PostService {
      * Skapa ett nytt inlägg för en användare.
      *
      * @param userId  Användarens id.
-     * @param postDto PostRequestDTO.
+     * @param postDto Vi hämtar data från klienten via PostRequestDTO.
      * @return En PostResponseDTO med information om postens innehåll.
      */
     @Transactional
@@ -140,8 +131,8 @@ public class PostService {
      * Uppdatera ett inlägg.
      * Söka upp ett inlägg med dess id och få uppdaterade uppgifterna från klienten.
      *
-     * @param id             Inläggets id.
-     * @param postRequestDTO PostRequestDTO.
+     * @param id             Inläggets ID.
+     * @param postRequestDTO Vi hämtar data från klienten via PostRequestDTO.
      * @return En PostResponseDTO med information om postens innehåll.
      */
     @Transactional
