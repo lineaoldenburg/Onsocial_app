@@ -5,6 +5,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import se.jensen.linea.onsocial_app.DTO.UserRequestDTO;
 import se.jensen.linea.onsocial_app.DTO.UserResponseDTO;
+import se.jensen.linea.onsocial_app.mapper.UserMapper;
 import se.jensen.linea.onsocial_app.model.User;
 import se.jensen.linea.onsocial_app.repository.UserRepository;
 
@@ -17,10 +18,12 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final UserMapper userMapper;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, UserMapper userMapper) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.userMapper = userMapper;
     }
 
     // Create new user
@@ -46,15 +49,7 @@ public class UserService {
 
         User savedUser = userRepository.save(user);
 
-        return new UserResponseDTO(
-                savedUser.getId(),
-                savedUser.getAlias(),
-                savedUser.getEmail(),
-                savedUser.getFirstName(),
-                savedUser.getLastName(),
-                savedUser.getProfilePicture(),
-                savedUser.getRole()
-        );
+        return userMapper.userToDTO(savedUser);
     }
 
     // Get all users
@@ -83,15 +78,7 @@ public class UserService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
 
-        return new UserResponseDTO(
-                user.getId(),
-                user.getAlias(),
-                user.getEmail(),
-                user.getFirstName(),
-                user.getLastName(),
-                user.getProfilePicture(),
-                user.getRole()
-        );
+        return userMapper.userToDTO(user);
     }
 
     // Update user
@@ -126,15 +113,7 @@ public class UserService {
 
         User updatedUser = userRepository.save(user);
 
-        return new UserResponseDTO(
-                updatedUser.getId(),
-                updatedUser.getAlias(),
-                updatedUser.getEmail(),
-                updatedUser.getFirstName(),
-                updatedUser.getLastName(),
-                updatedUser.getProfilePicture(),
-                updatedUser.getRole()
-        );
+        return userMapper.userToDTO(updatedUser);
     }
 
     // Delete user
