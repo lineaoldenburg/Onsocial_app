@@ -102,7 +102,7 @@ public class PostService {
      * Skapa ett nytt inlägg för en användare.
      *
      * @param userId  Användarens id.
-     * @param postDto PostRequestDTO.
+     * @param postDto Vi hämtar data från klienten via PostRequestDTO.
      * @return En PostResponseDTO med information om postens innehåll.
      */
     @Transactional
@@ -131,8 +131,8 @@ public class PostService {
      * Uppdatera ett inlägg.
      * Söka upp ett inlägg med dess id och få uppdaterade uppgifterna från klienten.
      *
-     * @param id             Inläggets id.
-     * @param postRequestDTO PostRequestDTO.
+     * @param id             Inläggets ID.
+     * @param postRequestDTO Vi hämtar data från klienten via PostRequestDTO.
      * @return En PostResponseDTO med information om postens innehåll.
      */
     @Transactional
