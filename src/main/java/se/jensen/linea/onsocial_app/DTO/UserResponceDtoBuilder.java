@@ -1,7 +1,11 @@
 package se.jensen.linea.onsocial_app.DTO;
 
 /**
- *
+ * Hjälpklass som bygger upp ett UserResponseDTO-objekt steg för steg
+ * som sedan kan användas för att slippa boilerplate-kod.
+ * <p>
+ * Klassen används främst i tester för att enkelt skapa testdata
+ * utan att behöva fylla i alla fält för UserResponseDTO varje gång.
  */
 public final class UserResponceDtoBuilder {
 
