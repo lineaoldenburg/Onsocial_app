@@ -8,6 +8,21 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    env:
+      # Database
+      DB_URL: ${{ secrets.DB_URL }}
+      DB_USERNAME: ${{ secrets.DB_USERNAME }}
+      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+
+      # JWT keys
+      JWT_PRIVATE_KEY: ${{ secrets.JWT_PRIVATE_KEY }}
+      JWT_PUBLIC_KEY: ${{ secrets.JWT_PUBLIC_KEY }}
+
+      # Cloudinary
+      CLOUDINARY_NAME: ${{ secrets.CLOUDINARY_NAME }}
+      CLOUDINARY_KEY: ${{ secrets.CLOUDINARY_KEY }}
+      CLOUDINARY_SECRET: ${{ secrets.CLOUDINARY_SECRET }}
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
