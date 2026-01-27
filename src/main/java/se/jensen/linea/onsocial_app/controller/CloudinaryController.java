@@ -11,7 +11,7 @@ import java.util.Map;
 
 /**
  * RestController som hanterar uppladdning av bilder till Cloudinary.
- * Klassen tar emot bilder från frontend, laddar upp dem till molnet och returnerar en URL som kan sparas i databsen.
+ * Klassen tar emot bilder från frontend, laddar upp dem till molnet och returnerar en URL som kan sparas i databasen.
  * <p>
  * Har två endpoints: en publik för registrering och en skyddad för inloggade användare.
  *

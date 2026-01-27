@@ -5,6 +5,13 @@ import se.jensen.linea.onsocial_app.DTO.UserRequestDTO;
 import se.jensen.linea.onsocial_app.DTO.UserResponseDTO;
 import se.jensen.linea.onsocial_app.model.User;
 
+/**
+ * Klassen mappar/konverterar mellan User-entity och User-DTO:er.
+ * Detta för att minimera boilerplate-kod i UserService.
+ *
+ * @author Simeon
+ * Dokumenterad: 2026-01-26
+ */
 @Component
 public class UserMapper {
 

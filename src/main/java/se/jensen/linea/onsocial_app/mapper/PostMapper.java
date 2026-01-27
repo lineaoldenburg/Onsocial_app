@@ -8,6 +8,8 @@ import se.jensen.linea.onsocial_app.model.User;
 /**
  * Mapper-klass som omvandlar mellan Post-entity och Post-DTO:er.
  * Används för att hålla isär databasskiktet och det som skickas till/från klienten.
+ *
+ * @author Duaa
  */
 public class PostMapper {
 
