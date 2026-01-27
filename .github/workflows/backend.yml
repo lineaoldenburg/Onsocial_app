@@ -21,7 +21,7 @@ jobs:
       # Cloudinary
       CLOUDINARY_NAME: ${{ secrets.CLOUDINARY_NAME }}
       CLOUDINARY_KEY: ${{ secrets.CLOUDINARY_KEY }}
-      CLOUDINARY_SECRET: ${{ secrets.CLOUDINARY_SECRETS }}
+      CLOUDINARY_SECRETS: ${{ secrets.CLOUDINARY_SECRETS }}
 
     steps:
       - name: Checkout code
