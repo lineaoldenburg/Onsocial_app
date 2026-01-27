@@ -7,43 +7,37 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
-    env:
-      # Database
-      DB_URL: ${{ secrets.DB_URL }}
-      DB_USERNAME: ${{ secrets.DB_USERNAME }}
-      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-
-      # JWT keys
-      JWT_PRIVATE_KEY: ${{ secrets.JWT_PRIVATE_KEY }}
-      JWT_PUBLIC_KEY: ${{ secrets.JWT_PUBLIC_KEY }}
-
-      # Cloudinary
-      CLOUDINARY_NAME: ${{ secrets.CLOUDINARY_NAME }}
-      CLOUDINARY_KEY: ${{ secrets.CLOUDINARY_KEY }}
-      CLOUDINARY_SECRETS: ${{ secrets.CLOUDINARY_SECRETS }}
-
+    
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-
+        
       - name: Set up JDK 17
         uses: actions/setup-java@v3
         with:
           java-version: '17'
           distribution: 'temurin'
-
+          
       - name: Build with Maven
-        run: mvn -B package -DskipTests
-
+        run: mvn clean install -Dmaven.test.skip=true
+        env:
+          DB_URL: ${{ secrets.DB_URL }}
+          DB_USERNAME: ${{ secrets.DB_USERNAME }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          JWT_PRIVATE_KEY: ${{ secrets.JWT_PRIVATE_KEY }}
+          JWT_PUBLIC_KEY: ${{ secrets.JWT_PUBLIC_KEY }}
+          CLOUDINARY_NAME: ${{ secrets.CLOUDINARY_NAME }}
+          CLOUDINARY_KEY: ${{ secrets.CLOUDINARY_KEY }}
+          CLOUDINARY_SECRETS: ${{ secrets.CLOUDINARY_SECRETS }}
+          
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-
+          
       - name: Build Docker image
         run: docker build -t duaa26/onsocial-app:latest .
-
+        
       - name: Push Docker image
         run: docker push duaa26/onsocial-app:latest
