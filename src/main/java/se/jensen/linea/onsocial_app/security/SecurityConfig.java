@@ -104,7 +104,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:5174", "http://localhost:5173", "http://jealous-charlotte-linealicia-21fed96d.koyeb.app/", "https://silky-shelba-linea-29cf60cd.koyeb.app/"));
+        configuration.setAllowedOrigins(List.of("http://localhost:5174", "http://localhost:5173", "http://jealous-charlotte-linealicia-21fed96d.koyeb.app"));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
         // configuration.setAllowCredentials(true); Only needed if we make JWT sessions in cookie header
